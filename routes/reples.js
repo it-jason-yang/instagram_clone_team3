@@ -4,7 +4,6 @@ const { Reply } = require("../models");
 
 // 댓글 등록
 router.post("/replyPost/:postId", async (req, res) => {
-  console.log("hi");
   try {
     // const {userId} = res.locals.userId
     const { postId } = req.params;
