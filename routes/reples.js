@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { Reply } = require("Reply");
+const { Reply } = require("../models");
 
 // 댓글 등록
-router.post("/api/replyPost/:postId", async (req, res) => {
+router.post("/replyPost/:postId", async (req, res) => {
+  console.log("hi");
   try {
     // const {userId} = res.locals.userId
     const { postId } = req.params;
@@ -23,7 +24,7 @@ router.post("/api/replyPost/:postId", async (req, res) => {
 });
 
 //댓글 조회
-router.get("/api/replyList/:postId", async (req, res) => {
+router.get("/replyList/:postId", async (req, res) => {
   try {
     const { postId } = req.params;
     const reply = await Reply.findAll({
@@ -37,7 +38,7 @@ router.get("/api/replyList/:postId", async (req, res) => {
 });
 
 //댓글 수정
-router.put("/api/replyDelete/:replyId", async (req, res) => {
+router.put("/replyUpdate/:replyId", async (req, res) => {
   try {
     // const { userId } = res.locals.userId
     const userId = "user1";
@@ -56,7 +57,7 @@ router.put("/api/replyDelete/:replyId", async (req, res) => {
 });
 
 //댓글 삭제
-router.delete("/api/replyDelete/:replyId", async (req, res) => {
+router.delete("/replyDelete/:replyId", async (req, res) => {
   try {
     // const { userId } = res.locals.userId
     const userId = "user1";
@@ -77,4 +78,4 @@ router.delete("/api/replyDelete/:replyId", async (req, res) => {
   }
 });
 
-module.exports = app;
+module.exports = router;

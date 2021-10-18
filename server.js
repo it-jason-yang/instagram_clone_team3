@@ -1,9 +1,8 @@
 const express = require("express");
 const logger = require("morgan");
-const app = express();
 const replesRouter = require("./routes/reples");
 const cors = require("cors");
-
+const app = express();
 //react 연결지워야할 것
 // app.use("/", (req, res) => {
 //     return res.send(express.static(path.join(__dirname, "client/index.html")));
