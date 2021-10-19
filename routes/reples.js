@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const logger = require("../config/logger");
 const { Reply } = require("../models");
 
 // 댓글 등록
@@ -16,8 +17,12 @@ router.post("/replyPost/:postId", async (req, res) => {
       comment,
       date,
     });
+    logger.info(
+      `POST /replyPost/:postId 200 "${userId}님이 댓글을 등록했습니다." `
+    );
     res.status(200).send({ result: reply, msg: "댓글을 등록했습니다." });
   } catch (err) {
+    logger.error(`POST /replyPost/:postId 400 "msg: ${err}"`);
     res.status(400).send({ msg: "댓글 작성에 실패했습니다." });
   }
 });
@@ -30,8 +35,12 @@ router.get("/replyList/:postId", async (req, res) => {
       order: [["date", "DESC"]],
       where: { postId },
     });
+    logger.info(
+      `GET /replyList/:postId 200 "${reply.length}개의 댓글을 조회했습니다." `
+    );
     res.status(200).send({ result: reply });
   } catch (err) {
+    logger.error(`GET /replyList/:postId 400 "msg: ${err}"`);
     res.status(400).send({ msg: "댓글 작성에 실패했습니다." });
   }
 });
@@ -44,19 +53,30 @@ router.put("/replyUpdate/:replyId", async (req, res) => {
     const { replyId } = req.params;
     const { comment } = req.body;
     const reply = await Reply.findByPk(replyId);
+    console.log(reply);
     if (reply) {
       if (userId == reply.userId) {
         await Reply.update({ comment }, { where: { replyId } });
+        logger.info(
+          `PUT /replyUpdate/:replyId 200 "${userId}님이 댓글을 수정했습니다." `
+        );
         res.status(200).send({ msg: "댓글이 정상적으로 수정되었습니다." });
       } else {
+        logger.info(
+          `PUT /replyUpdate/:replyId 200 "${userId}님은 작성자가 아닙니다." `
+        );
         res
           .status(200)
           .send({ msg: "댓글 수정은 작성자만 가능한 기능입니다." });
       }
     } else {
+      logger.info(
+        `PUT /replyUpdate/:replyId 200 "${userId}님의 댓글을 찾을 수 없습니다." `
+      );
       res.status(200).send({ msg: "수정가능한 댓글이 없습니다." });
     }
   } catch (err) {
+    logger.error(`PUT /replyUpdate/:replyId 400 "msg: ${err}"`);
     res
       .status(400)
       .send({ msg: "알 수 없는 문제가 발생했습니다. 관리자에게 문의해주세요" });
@@ -73,16 +93,26 @@ router.delete("/replyDelete/:replyId", async (req, res) => {
     if (reply) {
       if (userId == reply.userId) {
         await Reply.destroy({ where: { replyId } });
+        logger.info(
+          `DELETE /replyDelete/:replyId 200 "${userId}님이 댓글을 삭제했습니다." `
+        );
         res.send({
           msg: "댓글이 삭제되었습니다.",
         });
       } else {
+        logger.info(
+          `DELETE /replyDelete/:replyId 200 "${userId}님은 작성자가 아닙니다." `
+        );
         res.status(400).send({ msg: "댓글 작성자만 사용 가능한 기능입니다." });
       }
     } else {
-      res.status(200).send({ msg: "수정가능한 댓글이 없습니다." });
+      logger.info(
+        `DELETE /replyDelete/:replyId 200 "${userId}님의 댓글을 찾을 수 없습니다." `
+      );
+      res.status(200).send({ msg: "삭제가능한 댓글이 없습니다." });
     }
   } catch (err) {
+    logger.error(`DELETE /replyDelete/:replyId 400 "msg: ${err}"`);
     res
       .status(400)
       .send({ msg: "알 수 없는 문제가 발생했습니다. 관리자에게 문의해주세요" });
