@@ -1,5 +1,4 @@
 const express = require("express");
-const logger = require("morgan");
 const replesRouter = require("./routes/reples");
 const likeRouter = require("./routes/like");
 const cors = require("cors");
@@ -8,7 +7,7 @@ const app = express();
 // app.use("/", (req, res) => {
 //     return res.send(express.static(path.join(__dirname, "client/index.html")));
 //   });
-app.use(logger("dev"));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
