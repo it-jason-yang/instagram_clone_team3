@@ -53,7 +53,6 @@ router.put("/replyUpdate/:replyId", async (req, res) => {
     const { replyId } = req.params;
     const { comment } = req.body;
     const reply = await Reply.findByPk(replyId);
-    console.log(reply);
     if (reply) {
       if (userId == reply.userId) {
         await Reply.update({ comment }, { where: { replyId } });
