@@ -44,9 +44,17 @@ router.put("/replyUpdate/:replyId", async (req, res) => {
     const { replyId } = req.params;
     const { comment } = req.body;
     const reply = await Reply.findByPk(replyId);
-    if (userId == reply.userId) {
-      await Reply.update({ comment }, { where: { replyId } });
-      res.status(200).send({ msg: "댓글이 정상적으로 수정되었습니다." });
+    if (reply) {
+      if (userId == reply.userId) {
+        await Reply.update({ comment }, { where: { replyId } });
+        res.status(200).send({ msg: "댓글이 정상적으로 수정되었습니다." });
+      } else {
+        res
+          .status(200)
+          .send({ msg: "댓글 수정은 작성자만 가능한 기능입니다." });
+      }
+    } else {
+      res.status(200).send({ msg: "수정가능한 댓글이 없습니다." });
     }
   } catch (err) {
     res
@@ -62,13 +70,17 @@ router.delete("/replyDelete/:replyId", async (req, res) => {
     const userId = "user1";
     const { replyId } = req.params;
     const reply = await Reply.findByPk(replyId);
-    if (userId == reply.userId) {
-      await Reply.destroy({ where: { replyId } });
-      res.send({
-        msg: "댓글이 삭제되었습니다.",
-      });
+    if (reply) {
+      if (userId == reply.userId) {
+        await Reply.destroy({ where: { replyId } });
+        res.send({
+          msg: "댓글이 삭제되었습니다.",
+        });
+      } else {
+        res.status(400).send({ msg: "댓글 작성자만 사용 가능한 기능입니다." });
+      }
     } else {
-      res.status(400).send({ msg: "댓글 작성자만 사용 가능한 기능입니다." });
+      res.status(200).send({ msg: "수정가능한 댓글이 없습니다." });
     }
   } catch (err) {
     res

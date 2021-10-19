@@ -1,6 +1,7 @@
 const express = require("express");
 const logger = require("morgan");
 const replesRouter = require("./routes/reples");
+const likeRouter = require("./routes/like");
 const cors = require("cors");
 const app = express();
 //react 연결지워야할 것
@@ -14,6 +15,7 @@ app.use(cors());
 
 //routing
 app.use("/api", replesRouter);
+app.use("/api", likeRouter);
 
 //Error handler
 app.use(function (err, req, res, next) {

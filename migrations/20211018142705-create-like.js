@@ -11,7 +11,8 @@ module.exports = {
       postId: {
         type: Sequelize.INTEGER,
       },
-      likeUser: {
+      userId: {
+        primarykey: true,
         type: Sequelize.STRING,
       },
       createdAt: {
