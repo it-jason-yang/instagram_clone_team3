@@ -60,7 +60,7 @@ router.route("/users/login").post(async (req, res) => {
     if (!users || !bcrypt.compareSync(userPw, users.userPw)) {
       res.status(200).send({ msg: "아이디 또는 패스워드가 일치하지 않습니다" });
     } else {
-      const token = jwt.sign({ userId: users.Id }, process.env.TOKEN_KEY); //토큰값 설정
+      const token = jwt.sign({ userId: users.userId }, process.env.TOKEN_KEY); //토큰값 설정
       res.status(200).send({ token, msg: "로그인에 성공했습니다" }); //토큰값 저장
     }
   } catch (err) {
