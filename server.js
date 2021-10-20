@@ -1,20 +1,22 @@
 const express = require("express");
-const logger = require("morgan");
-const app = express();
+const replesRouter = require("./routes/reples");
+const likeRouter = require("./routes/like");
 const usersRouter = require("./routes/users");
 const cors = require("cors");
-
+const app = express();
 //react 연결지워야할 것
 // app.use("/", (req, res) => {
 //     return res.send(express.static(path.join(__dirname, "client/index.html")));
 //   });
-app.use(logger("dev"));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 //routing
 app.use("/api", usersRouter);
+app.use("/api", replesRouter);
+app.use("/api", likeRouter);
 
 //Error handler
 app.use(function (err, req, res, next) {
