@@ -3,12 +3,21 @@ const router = express.Router();
 const logger = require("../config/logger");
 const { Like } = require("../models");
 const { Op } = require("sequelize");
+<<<<<<< HEAD
 
 router.post("/likes/:postId", async (req, res) => {
   try {
     // const {userId} = res.locals.userId
     const { postId } = req.params;
     const userId = "user1";
+=======
+const authMiddlewares = require("../middlewares/auth-middlewares");
+
+router.post("/likes/:postId", authMiddlewares, async (req, res) => {
+  try {
+    const { userId } = res.locals.userId;
+    const { postId } = req.params;
+>>>>>>> bfd357fb6507c4b410a781e7c0f3897a504a4897
     const likeUser = await Like.findOne({
       where: {
         [Op.and]: [{ userId }, { postId }],
@@ -67,11 +76,18 @@ router.get("/likes/:postId", async (req, res) => {
 });
 
 //좋아요 삭제
+<<<<<<< HEAD
 router.delete("/likes/:postId", async (req, res) => {
   try {
     // const {userId} = res.locals.userId
     const { postId } = req.params;
     const userId = "user1";
+=======
+router.delete("/likes/:postId", authMiddlewares, async (req, res) => {
+  try {
+    const { userId } = res.locals.userId;
+    const { postId } = req.params;
+>>>>>>> bfd357fb6507c4b410a781e7c0f3897a504a4897
     const likeUser = await Like.findOne({
       //findOne을 쓸 경우 length를 못 가져오더라.. 1개만 찾는데 length를 찾는다는게 말이 안되나봄
       where: {

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const logger = require("../config/logger");
 const { Reply } = require("../models");
+<<<<<<< HEAD
 
 // 댓글 등록
 router.post("/replyPost/:postId", async (req, res) => {
@@ -10,6 +11,16 @@ router.post("/replyPost/:postId", async (req, res) => {
     const { postId } = req.params;
     const { comment } = req.body;
     const userId = "user1";
+=======
+const authMiddlewares = require("../middlewares/auth-middlewares");
+
+// 댓글 등록
+router.post("/replyPost/:postId", authMiddlewares, async (req, res) => {
+  try {
+    const { userId } = res.locals.userId;
+    const { postId } = req.params;
+    const { comment } = req.body;
+>>>>>>> bfd357fb6507c4b410a781e7c0f3897a504a4897
     const date = new Date();
     const reply = await Reply.create({
       postId,
@@ -46,10 +57,16 @@ router.get("/replyList/:postId", async (req, res) => {
 });
 
 //댓글 수정
+<<<<<<< HEAD
 router.put("/replyUpdate/:replyId", async (req, res) => {
   try {
     // const { userId } = res.locals.userId
     const userId = "user1";
+=======
+router.put("/replyUpdate/:replyId", authMiddlewares, async (req, res) => {
+  try {
+    const { userId } = res.locals.userId;
+>>>>>>> bfd357fb6507c4b410a781e7c0f3897a504a4897
     const { replyId } = req.params;
     const { comment } = req.body;
     const reply = await Reply.findByPk(replyId);
@@ -83,10 +100,16 @@ router.put("/replyUpdate/:replyId", async (req, res) => {
 });
 
 //댓글 삭제
+<<<<<<< HEAD
 router.delete("/replyDelete/:replyId", async (req, res) => {
   try {
     // const { userId } = res.locals.userId
     const userId = "user1";
+=======
+router.delete("/replyDelete/:replyId", authMiddlewares, async (req, res) => {
+  try {
+    const { userId } = res.locals.userId;
+>>>>>>> bfd357fb6507c4b410a781e7c0f3897a504a4897
     const { replyId } = req.params;
     const reply = await Reply.findByPk(replyId);
     if (reply) {
