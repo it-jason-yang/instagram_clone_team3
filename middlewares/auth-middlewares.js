@@ -6,6 +6,7 @@ require("dotenv").config();
 module.exports = async (req, res, next) => {
   const { authorization } = req.headers;
   //console.log(authorization)
+
   const [tokenType, tokenValue] = (authorization || "").split(" ");
   console.log(tokenType);
   //console.log(tokenValue)

@@ -48,7 +48,7 @@ const resizeImg = (path) => {
 
 //파일 업로드
 //upload.array('img',3) 여러개 업로드 시
-router.post('/posts/img', authMiddlewares, upload.single('img'), async(req,res) => {
+router.post('/posts/create', authMiddlewares, upload.single('img'), async(req,res) => {
   // const { userId } = res.locals.user; //로그인 정보에서 가져온다.
   const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
   const { postContents } = req.body;
