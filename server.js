@@ -1,13 +1,9 @@
 const express = require("express");
 const logger = require("morgan");
 const app = express();
-const usersRouter = require("./routes/users");
+const postsRouter = require('./routes/router_posts');
 const cors = require("cors");
 
-//react 연결지워야할 것
-// app.use("/", (req, res) => {
-//     return res.send(express.static(path.join(__dirname, "client/index.html")));
-//   });
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -15,7 +11,7 @@ app.use(cors());
 app.use(express.static('public'));
 
 //routing
-app.use("/api", usersRouter);
+app.use('/posts', postsRouter);
 
 
 //Error handler
