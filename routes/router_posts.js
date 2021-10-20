@@ -1,14 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { Posts, sequelize, Sequelize } = require('../models');
-// const authMiddleware = require('../middlewares/auth_middleware');
 const fs = require('fs');
 const multer = require('multer'); //form data 처리를 할수 있는 라이브러리 multer
-// const multerS3 = require('multer-s3'); // aws s3에 파일을 처리 할수 있는 라이브러리 multer-s3
-// const AWS = require('aws-sdk'); //javascript 용 aws 서비스 사용 라이브러리
 const path = require('path'); //경로지정
 const randomstring = require("randomstring");
 const sharp = require("sharp");
+const authMiddlewares = require("../middlewares/auth-middlewares");
 
 
 //스테틱 디렉토리 생성
@@ -50,7 +48,7 @@ const resizeImg = (path) => {
 
 //파일 업로드
 //upload.array('img',3) 여러개 업로드 시
-router.post('/img', upload.single('img'), async(req,res) => {
+router.post('/posts/img', authMiddlewares, upload.single('img'), async(req,res) => {
   // const { userId } = res.locals.user; //로그인 정보에서 가져온다.
   const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
   const { postContents } = req.body;
@@ -93,7 +91,7 @@ const img_join = `
         ORDER BY p.postId DESC`;
         
 //게시글 받아와서 뿌리기
-router.get('/', async (req, res) => {
+router.get('/posts', async (req, res) => {
   try {
     //const posts = await Posts.find({}).sort({ postId: -1 });
     const postQuery = `
@@ -114,7 +112,7 @@ router.get('/', async (req, res) => {
 });
 
 //게시글 삭제
-router.delete('/:postId/delete', async (req, res) => {
+router.delete('/posts/:postId/delete', authMiddlewares, async (req, res) => {
   console.log('delete 진입')
   const postId = req.params.postId;
   // const { userId } = res.locals.user; //로그인 정보에서 가져온다.
@@ -138,7 +136,7 @@ router.delete('/:postId/delete', async (req, res) => {
 });
 
 //게시글 수정
-router.put("/:postId/modify", upload.single('img'), async (req, res, next) => {
+router.put("/posts/:postId/modify", authMiddlewares, upload.single('img'), async (req, res, next) => {
   console.log('modify 진입')
 
   // const { userId } = res.locals.user; //로그인 정보에서 가져온다.
