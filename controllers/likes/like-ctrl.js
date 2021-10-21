@@ -2,6 +2,37 @@ const logger = require("../../config/logger");
 const { Like } = require("../../models");
 const { Op } = require("sequelize");
 
+const likeOutPut = {
+  getLike: async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const likeUser = await Like.findAll({
+        where: { postId },
+      });
+
+      if (likeUser) {
+        const likeNum = likeUser.length;
+        logger.info(
+          `GET /likes/:postId 200 "postId가 ${postId}의 글에 ${likeNum}개의 좋아요가 있습니다." `
+        );
+        res
+          .status(200)
+          .send({ result: likeNum, msg: "좋아요 갯수를 불러왔습니다." });
+      } else {
+        logger.info(
+          `GET /likes/:postId 200 "postId가 ${postId}의 글에 좋아요를 한 사람이 없습니다." `
+        );
+        res.status(200).send({ msg: "좋아요를 한 사람이 없습니다." });
+      }
+    } catch (err) {
+      logger.info(`GET /likes/:postId 400 "msg:${err}"`);
+      res.status(400).send({
+        msg: "알 수 없는 문제가 발생 했습니다. 관리자에 문의 해주세요",
+      });
+    }
+  },
+};
+
 const likeProcess = {
   createLike: async (req, res) => {
     try {
@@ -29,35 +60,6 @@ const likeProcess = {
       }
     } catch (err) {
       logger.info(`POST /likes/:postId 400 "msg:${err}"`);
-      res.status(400).send({
-        msg: "알 수 없는 문제가 발생 했습니다. 관리자에 문의 해주세요",
-      });
-    }
-  },
-
-  getLike: async (req, res) => {
-    try {
-      const { postId } = req.params;
-      const likeUser = await Like.findAll({
-        where: { postId },
-      });
-
-      if (likeUser) {
-        const likeNum = likeUser.length;
-        logger.info(
-          `GET /likes/:postId 200 "postId가 ${postId}의 글에 ${likeNum}개의 좋아요가 있습니다." `
-        );
-        res
-          .status(200)
-          .send({ result: likeNum, msg: "좋아요 갯수를 불러왔습니다." });
-      } else {
-        logger.info(
-          `GET /likes/:postId 200 "postId가 ${postId}의 글에 좋아요를 한 사람이 없습니다." `
-        );
-        res.status(200).send({ msg: "좋아요를 한 사람이 없습니다." });
-      }
-    } catch (err) {
-      logger.info(`GET /likes/:postId 400 "msg:${err}"`);
       res.status(400).send({
         msg: "알 수 없는 문제가 발생 했습니다. 관리자에 문의 해주세요",
       });
@@ -100,4 +102,5 @@ const likeProcess = {
 
 module.exports = {
   likeProcess,
+  likeOutPut,
 };

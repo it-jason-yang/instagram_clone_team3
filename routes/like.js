@@ -3,16 +3,13 @@ const router = express.Router();
 const likeCtrl = require("../controllers/likes/like-ctrl");
 const authMiddlewares = require("../middlewares/auth-middlewares");
 
-router.post("/likes/:postId", authMiddlewares, likeCtrl.likeProcess.createLike);
-
+postLike = likeCtrl.likeProcess;
+OutputLike = likeCtrl.likeOutPut;
+//좋아요 추가
+router.post("/likes/:postId", authMiddlewares, postLike.createLike);
 //좋아요 조회
-router.get("/likes/:postId", likeCtrl.likeProcess.getLike);
-
+router.get("/likes/:postId", OutputLike.getLike);
 //좋아요 삭제
-router.delete(
-  "/likes/:postId",
-  authMiddlewares,
-  likeCtrl.likeProcess.removeLike
-);
+router.delete("/likes/:postId", authMiddlewares, postLike.removeLike);
 
 module.exports = router;
