@@ -8,9 +8,6 @@ const randomstring = require("randomstring");
 const sharp = require("sharp");
 const authMiddlewares = require("../middlewares/auth-middlewares");
 const likeCheck = require("../middlewares/likeCheck");
-const likeCtrl = require("../controllers/likes/like-ctrl");
-
-OutputLike = likeCtrl.likeOutPut.getLike;
 
 //스테틱 디렉토리 생성
 try {
