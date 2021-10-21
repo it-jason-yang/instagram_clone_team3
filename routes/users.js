@@ -31,16 +31,16 @@ router.route("/users/register").post(async (req, res) => {
         userNameId,
         userPw: encryptedPw,
       });
+      console.log("asd");
       res.status(200).send({ result: user, msg: "회원가입에 성공했습니다" });
     } else {
       //입력정보에 해당 사용자 이름이 있을때
-      res
-        .status(200)
-        .send({
-          msg: "이미 사용중인 이메일, 전화번호 또는 사용자 이름이 있습니다",
-        });
+      res.status(200).send({
+        msg: "이미 사용중인 이메일, 전화번호 또는 사용자 이름이 있습니다",
+      });
     }
   } catch (err) {
+    console.log(err);
     res
       .status(400)
       .send({ msg: "알 수 없는 문제가 생겼습니다. 관리자에게 문의해 주세요" });
@@ -71,7 +71,7 @@ router.route("/users/login").post(async (req, res) => {
 });
 
 router.get("/users/me", authMiddlewares, async (req, res) => {
-  res.status(400).send({ user : res.locals.user });
+  res.status(400).send({ user: res.locals.user });
 });
 
 module.exports = router;

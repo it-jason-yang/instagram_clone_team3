@@ -2,8 +2,12 @@ const { likeProcess, likeOutPut } = require("../controllers/likes/like-ctrl");
 jest.mock("../models");
 const { Like } = require("../models");
 
-describe("likeProcess", () => {
-  createLikeOne = likeProcess.createLike;
+createLikeOne = likeProcess.createLike;
+removeLikeOne = likeProcess.removeLike;
+getLikeAll = likeOutPut.getLike;
+
+//likeProcess testcode
+describe("createLikeOne", () => {
   const req = {
     params: { postId: 1 },
   };
@@ -15,87 +19,106 @@ describe("likeProcess", () => {
   test("좋아요를 누르면 좋아요되었습니다 라고 해야됨", async () => {
     Like.findOne.mockReturnValue(null);
     await createLikeOne(req, res);
-    expect(res.status).toBeCalledWith(200);
+    expect(res.status).toHaveBeenCalledWith(200);
     expect(res.send).toHaveBeenCalledWith({
       msg: "좋아요 완료",
     });
   });
+
   test("좋아요를 누른 사람이 또 누르면 좋아요는 한번만 할 수 있습니다라고 알려줘야됨", async () => {
-    Like.findOne.mockReturnValue(
-      Promise.resolve({
-        createLikeOne(userId, postId) {
-          return Promise.resolve(true);
-        },
-      })
-    );
+    Like.findOne.mockReturnValue(true);
     await createLikeOne(req, res);
-    expect(res.status).toBeCalledWith(200);
+    expect(res.status).toHaveBeenCalledWith(404);
     expect(res.send).toHaveBeenCalledWith({
       msg: "좋아요는 한번만 할 수 있습니다",
     });
   });
-  test("DB에서 에러발생 시 catch 부분 error 호출", async () => {
+  test("좋아요 추가 기능 중 DB에서 에러발생 시 catch 부분 error 호출", async () => {
     const error = "에러에러";
     Like.findOne.mockReturnValue(Promise.reject(error));
     await createLikeOne(req, res);
-    expect(res.status).toBeCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledWith({
       msg: "알 수 없는 문제가 발생 했습니다. 관리자에 문의 해주세요",
     });
   });
 });
 
-//연결 주소 test
-// describe("api connet test", () => {
-//   test("POST /api/likes/:postId status 200 test", async () => {
-//     const req = {
-//       headers: {
-//         authorization:
-//           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiaWF0IjoxNjM0ODEwMjIxfQ.2_5ZIkIVCYRGLktWPy06a6S9-V3t8JCbltmBaBk8vW0",
-//       },
-//       locals: {},
-//     };
-//     const res = await supertest(server).post("/api/likes/:postId");
-//     expect(res.status).toEqual(200);
-//   });
+//removeLikeOne testcode
+describe("removeLikeOne", () => {
+  const req = {
+    params: { postId: 1 },
+  };
+  const res = {
+    locals: { userId: "abc" },
+    status: jest.fn(() => res),
+    send: jest.fn(),
+  };
+  //좋아요 취소
+  test("좋아요를 다시 누르면 좋아요 취소가 되었습니다 라고 해야됨", async () => {
+    Like.findOne.mockReturnValue(true);
+    await removeLikeOne(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith({
+      msg: "좋아요를 취소 했습니다",
+    });
+  });
+  console.log(res.send);
+  //좋아요 취소
+  test("좋아요를 한적이 없는데 좋아요 취소를 누르게 되면 좋아요를 한 상태에만 가능한 기능입니다. 라고 해야됨", async () => {
+    Like.findOne.mockReturnValue(false);
+    await removeLikeOne(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.send).toHaveBeenCalledWith({
+      msg: "좋아요를 한 상태에만 가능한 기능입니다",
+    });
+  });
+  //좋아요 취소
+  test("좋아요 취소 기능 중 DB에서 에러발생 시 catch 부분 error 호출", async () => {
+    const error = "에러에러";
+    Like.findOne.mockReturnValue(Promise.reject(error));
+    await removeLikeOne(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.send).toHaveBeenCalledWith({
+      msg: "알 수 없는 문제가 발생 했습니다. 관리자에 문의 해주세요",
+    });
+  });
+});
 
-// test("GET /api/likes/:postId status 200 test", async () => {
-//   const res = await supertest(server).get("/api/likes/:postId");
-//   expect(res.status).toEqual(200);
-// });
+//likeOutPut testcode
+describe("likeOutPut", () => {
+  const req = {
+    params: { postId: 1 },
+  };
+  const res = {
+    status: jest.fn(() => res),
+    send: jest.fn(),
+  };
+  //좋아요 조회
+  test("좋아요가 게시물에 달려있을때 좋아요를 불러오게 되면 좋아요 갯수를 불러왔습니다라고 함", async () => {
+    Like.findAll.mockReturnValue(true);
+    await getLikeAll(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith({
+      msg: "좋아요 갯수를 불러왔습니다",
+    });
+  });
 
-// test("GET /api/likes/:postId status 200 test", async () => {
-//   const res = await supertest(server).delete("/api/likes/:postId");
-//   expect(res.status).toEqual(200);
-// });
-
-// test("GET /api/likeslikes/postId status 404 test", async () => {
-//   const res = await supertest(server).get("/api/likeslikes/:postId");
-//   expect(res.status).toEqual(404);
-// });
-// });
-
-// it("GET /api/likes/:postId 성공 시 status 200", async () => {
-//   Like.findAll = jest.fn();
-//   const req = {
-//     params: {
-//       postId: "1",
-//     },
-//   };
-//   const res = await supertest(server).get("/api/likes/:postId");
-//   expect(res.status).toBe(200);
-//   expect(Like.findAll).toHaveBeenCalledTimes(1);
-//   expect(Like.findAll).toHaveLength(0);
-// });
-
-// it("post /api/likes/:postId 성공 시 status 200", async () => {
-//   const res = await supertest(server)
-//     .post("/api/likes/:postId")
-//     .send({
-//       headers: {
-//         authorization:
-//           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiLsmrTsmIHsnpAiLCJpYXQiOjE2MzQ3OTM0NDJ9.cs7ImmFCCdtAWRwHkApN3Gs8sbmMOv-PYi10Lodmxmk",
-//       },
-//     });
-//   expect(res.status).toBe(200);
-// });
+  test("좋아요가 게시물에 없을때 좋아요를 불러오게 되면 좋아요를 한 사람이 없습니다라고 함", async () => {
+    Like.findAll.mockReturnValue(false);
+    await getLikeAll(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.send).toHaveBeenCalledWith({
+      msg: "좋아요를 한 사람이 없습니다",
+    });
+  });
+  test("좋아요 조회 기능 중 DB에서 에러발생 시 catch 부분 error 호출", async () => {
+    const error = "에러에러!!";
+    Like.findAll.mockReturnValue(Promise.reject(error));
+    await getLikeAll(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.send).toHaveBeenCalledWith({
+      msg: "알 수 없는 문제가 발생 했습니다. 관리자에 문의 해주세요",
+    });
+  });
+});
