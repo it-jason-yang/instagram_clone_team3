@@ -48,9 +48,9 @@ const resizeImg = (path) => {
 
 //파일 업로드
 //upload.array('img',3) 여러개 업로드 시
-router.post('/posts/img', authMiddlewares, upload.single('img'), async(req,res) => {
-  // const { userId } = res.locals.user; //로그인 정보에서 가져온다.
-  const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
+router.post('/posts/create', authMiddlewares, upload.single('img'), async(req,res) => {
+  const { userNameId } = res.locals.userId; //로그인 정보에서 가져온다.
+  //const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
   const { postContents } = req.body;
   let image = '';
   const date = new Date();
@@ -69,7 +69,7 @@ router.post('/posts/img', authMiddlewares, upload.single('img'), async(req,res) 
     }
 
     const posts = await Posts.create({
-      userId,
+      userId : userNameId,
       postContents,
       postImg:image,
       date,
@@ -115,8 +115,8 @@ router.get('/posts', async (req, res) => {
 router.delete('/posts/:postId/delete', authMiddlewares, async (req, res) => {
   console.log('delete 진입')
   const postId = req.params.postId;
-  // const { userId } = res.locals.user; //로그인 정보에서 가져온다.
-  const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
+  const {userNameId} = res.locals.userId; //로그인 정보에서 가져온다.
+  //const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
   try {
     isExist = await Posts.findOne({ where: {postId} });
       if (isExist.length !== 0 && userId == isExist.userId) {
@@ -139,8 +139,8 @@ router.delete('/posts/:postId/delete', authMiddlewares, async (req, res) => {
 router.put("/posts/:postId/modify", authMiddlewares, upload.single('img'), async (req, res, next) => {
   console.log('modify 진입')
 
-  // const { userId } = res.locals.user; //로그인 정보에서 가져온다.
-  const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
+  const { userNameId } = res.locals.userId; //로그인 정보에서 가져온다.
+  //const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
   const postId = req.params.postId;
   const { postContents } = req.body;
   let image = '';
