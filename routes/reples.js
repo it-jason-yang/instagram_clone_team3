@@ -7,20 +7,18 @@ const authMiddlewares = require("../middlewares/auth-middlewares");
 // 댓글 등록
 router.post("/replyPost/:postId", authMiddlewares, async (req, res) => {
   try {
-    const { userId } = res.locals.userId;
     const { userNameId } = res.locals.userId;
-    console.log(userNameId);
     const { postId } = req.params;
     const { comment } = req.body;
     const date = new Date();
     const reply = await Reply.create({
       postId,
-      userId,
+      userId: userNameId,
       comment,
       date,
     });
     logger.info(
-      `POST /replyPost/:postId 200 "${userId}님이 댓글을 등록했습니다." `
+      `POST /replyPost/:postId 200 "${userNameId}님이 댓글을 등록했습니다." `
     );
     res.status(200).send({ result: reply, msg: "댓글을 등록했습니다." });
   } catch (err) {
@@ -50,20 +48,20 @@ router.get("/replyList/:postId", async (req, res) => {
 //댓글 수정
 router.put("/replyUpdate/:replyId", authMiddlewares, async (req, res) => {
   try {
-    const { userId } = res.locals.userId;
+    const { userNameId } = res.locals.userId;
     const { replyId } = req.params;
     const { comment } = req.body;
     const reply = await Reply.findByPk(replyId);
     if (reply) {
-      if (userId == reply.userId) {
+      if (userNameId == reply.userId) {
         await Reply.update({ comment }, { where: { replyId } });
         logger.info(
-          `PUT /replyUpdate/:replyId 200 "${userId}님이 댓글을 수정했습니다." `
+          `PUT /replyUpdate/:replyId 200 "${userNameId}님이 댓글을 수정했습니다." `
         );
         res.status(200).send({ msg: "댓글이 정상적으로 수정되었습니다." });
       } else {
         logger.info(
-          `PUT /replyUpdate/:replyId 200 "${userId}님은 작성자가 아닙니다." `
+          `PUT /replyUpdate/:replyId 200 "${userNameId}님은 작성자가 아닙니다." `
         );
         res
           .status(200)
@@ -71,7 +69,7 @@ router.put("/replyUpdate/:replyId", authMiddlewares, async (req, res) => {
       }
     } else {
       logger.info(
-        `PUT /replyUpdate/:replyId 200 "${userId}님의 댓글을 찾을 수 없습니다." `
+        `PUT /replyUpdate/:replyId 200 "${userNameId}님의 댓글을 찾을 수 없습니다." `
       );
       res.status(200).send({ msg: "수정가능한 댓글이 없습니다." });
     }
@@ -86,27 +84,27 @@ router.put("/replyUpdate/:replyId", authMiddlewares, async (req, res) => {
 //댓글 삭제
 router.delete("/replyDelete/:replyId", authMiddlewares, async (req, res) => {
   try {
-    const { userId } = res.locals.userId;
+    const { userNameId } = res.locals.userId;
     const { replyId } = req.params;
     const reply = await Reply.findByPk(replyId);
     if (reply) {
-      if (userId == reply.userId) {
+      if (userNameId == reply.userId) {
         await Reply.destroy({ where: { replyId } });
         logger.info(
-          `DELETE /replyDelete/:replyId 200 "${userId}님이 댓글을 삭제했습니다." `
+          `DELETE /replyDelete/:replyId 200 "${userNameId}님이 댓글을 삭제했습니다." `
         );
         res.send({
           msg: "댓글이 삭제되었습니다.",
         });
       } else {
         logger.info(
-          `DELETE /replyDelete/:replyId 200 "${userId}님은 작성자가 아닙니다." `
+          `DELETE /replyDelete/:replyId 200 "${userNameId}님은 작성자가 아닙니다." `
         );
         res.status(400).send({ msg: "댓글 작성자만 사용 가능한 기능입니다." });
       }
     } else {
       logger.info(
-        `DELETE /replyDelete/:replyId 200 "${userId}님의 댓글을 찾을 수 없습니다." `
+        `DELETE /replyDelete/:replyId 200 "${userNameId}님의 댓글을 찾을 수 없습니다." `
       );
       res.status(200).send({ msg: "삭제가능한 댓글이 없습니다." });
     }

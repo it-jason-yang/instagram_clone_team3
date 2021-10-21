@@ -18,8 +18,6 @@ module.exports = async (req, res, next) => {
 
     User.findByPk(userId).then((user) => {
       res.locals.userId = user;
-
-      console.log(user.userNameId);
       next();
     });
   } catch (error) {
