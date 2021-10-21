@@ -44,8 +44,9 @@ router.get("/likes/:postId", async (req, res) => {
     const likeUser = await Like.findAll({
       where: { postId },
     });
-    const likeNum = likeUser.length;
-    if (likeNum > 0) {
+
+    if (likeUser) {
+      const likeNum = likeUser.length;
       logger.info(
         `GET /likes/:postId 200 "postId가 ${postId}의 글에 ${likeNum}개의 좋아요가 있습니다." `
       );
