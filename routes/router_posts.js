@@ -159,9 +159,9 @@ router.put("/posts/:postId/modify", authMiddlewares, upload.single('img'), async
   }
 
   try {
-    if (image) {
-      resizeImg(req.file.path);
-    }
+    // if (image) {
+    //   resizeImg(req.file.path);
+    // }
 
     //postsId가 존재하는지 null 체크
     if (postId == null) {
