@@ -7,7 +7,7 @@ removeLikeOne = likeProcess.removeLike;
 getLikeAll = likeOutPut.getLike;
 
 //likeProcess testcode
-describe("likeProcess", () => {
+describe("createLikeOne", () => {
   const req = {
     params: { postId: 1 },
   };
@@ -42,7 +42,18 @@ describe("likeProcess", () => {
       msg: "알 수 없는 문제가 발생 했습니다. 관리자에 문의 해주세요",
     });
   });
+});
 
+//removeLikeOne testcode
+describe("removeLikeOne", () => {
+  const req = {
+    params: { postId: 1 },
+  };
+  const res = {
+    locals: { userId: "abc" },
+    status: jest.fn(() => res),
+    send: jest.fn(),
+  };
   //좋아요 취소
   test("좋아요를 다시 누르면 좋아요 취소가 되었습니다 라고 해야됨", async () => {
     Like.findOne.mockReturnValue(true);
@@ -52,6 +63,7 @@ describe("likeProcess", () => {
       msg: "좋아요를 취소 했습니다",
     });
   });
+  console.log(res.send);
   //좋아요 취소
   test("좋아요를 한적이 없는데 좋아요 취소를 누르게 되면 좋아요를 한 상태에만 가능한 기능입니다. 라고 해야됨", async () => {
     Like.findOne.mockReturnValue(false);
@@ -73,6 +85,7 @@ describe("likeProcess", () => {
   });
 });
 
+//likeOutPut testcode
 describe("likeOutPut", () => {
   const req = {
     params: { postId: 1 },

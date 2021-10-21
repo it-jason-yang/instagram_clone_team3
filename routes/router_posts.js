@@ -7,6 +7,7 @@ const path = require("path"); //경로지정
 const randomstring = require("randomstring");
 const sharp = require("sharp");
 const authMiddlewares = require("../middlewares/auth-middlewares");
+const likeCtrl = require("../controllers/likes/like-ctrl");
 
 //스테틱 디렉토리 생성
 try{
