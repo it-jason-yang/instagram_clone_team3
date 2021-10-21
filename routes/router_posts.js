@@ -99,6 +99,7 @@ router.post(
 //게시글 받아와서 뿌리기
 router.get("/posts", async (req, res) => {
   try {
+
     //const posts = await Posts.find({}).sort({ postId: -1 });
     const postQuery = `
       SELECT p.postId, p.userId, p.postContents, p.postImg, count(l.postId) as likeCnt
