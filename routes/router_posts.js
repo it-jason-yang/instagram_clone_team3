@@ -9,19 +9,11 @@ const sharp = require("sharp");
 const authMiddlewares = require("../middlewares/auth-middlewares");
 
 //스테틱 디렉토리 생성
-<<<<<<< HEAD
-try {
-  fs.readdirSync("uploads"); //readdir 첫번째 인자로 폴더를 가져온다
-} catch (error) {
-  console.log("uploads 폴더가 없으면 생성");
-  fs.mkdirSync("uploads");
-=======
 try{
   fs.readdirSync('public/uploads'); //readdir 첫번째 인자로 폴더를 가져온다
 }catch(error) {
   console.log('uploads 폴더가 없으면 생성');
   fs.mkdirSync('public/uploads');
->>>>>>> 7a6baa9a433d1ea9c888eaec708c9117258c9296
 }
 
 //파일 생성규칙
@@ -95,15 +87,6 @@ router.post(
 );
 
 //팔로우 컬럼 별도로 파서 팔로우하는 계정 글만 보여주는 경우 활용
-<<<<<<< HEAD
-const img_join = `
-        SELECT p.postId, p.userId, p.postContents, p.image, p.date p.createdAt, p.updatedAt
-        FROM Posts AS p
-        JOIN Images AS I
-        ON p.userId = u.userId
-        ORDER BY p.postId DESC`;
-
-=======
 // const img_join = `
 //         SELECT p.postId, p.userId, p.postContents, p.image, p.date p.createdAt, p.updatedAt
 //         FROM Posts AS p
@@ -111,7 +94,6 @@ const img_join = `
 //         ON p.userId = u.userId
 //         ORDER BY p.postId DESC`;
         
->>>>>>> 7a6baa9a433d1ea9c888eaec708c9117258c9296
 //게시글 받아와서 뿌리기
 router.get("/posts", async (req, res) => {
   try {
@@ -137,28 +119,11 @@ router.get("/posts", async (req, res) => {
 router.delete("/posts/:postId/delete", authMiddlewares, async (req, res) => {
   console.log("delete 진입");
   const postId = req.params.postId;
-<<<<<<< HEAD
-<<<<<<< HEAD
-  const { userNameId } = res.locals.userId; //로그인 정보에서 가져온다.
-  //const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
-  try {
-    isExist = await Posts.findOne({ where: { postId } });
-    if (isExist.length !== 0 && userId == isExist.userId) {
-      await Posts.destroy({ where: { postId } });
-      return res.status(200).send({ msg: "포스팅 삭제 완료!" });
-    } else {
-      return res
-        .status(400)
-        .send({ msg: "해당 포스팅이 존재하지 않거나 삭제할 수 없습니다." });
-=======
   const {userId} = res.locals.userId; //로그인 정보에서 가져온다.
-=======
-  const {userNameId} = res.locals.userId; //로그인 정보에서 가져온다.
->>>>>>> e037766078923d2815cb644f4a958a94f1d2ba59
   //const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
   try {
     isExist = await Posts.findOne({ where: {postId} });
-      if (isExist.length !== 0 && userNameId == isExist.userId) {
+      if (isExist.length !== 0 && userId == isExist.userId) {
         await Posts.destroy({ where: {postId} });
         return res.status(200).send({ msg: "포스팅 삭제 완료!" });
       } else {
@@ -168,42 +133,17 @@ router.delete("/posts/:postId/delete", authMiddlewares, async (req, res) => {
   }catch (error) {
       console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
       res.status(400).send({msg: '알 수 없는  문제가 발생했습니다.'});
->>>>>>> 7a6baa9a433d1ea9c888eaec708c9117258c9296
     }
     res.status(200).send({
       msg: "게시글을 삭제했습니다.",
     });
-  } catch (error) {
-    console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
-    res.status(400).send({ msg: "알 수 없는  문제가 발생했습니다." });
-  }
 });
 
 //게시글 수정
-<<<<<<< HEAD
-router.put(
-  "/posts/:postId/modify",
-  authMiddlewares,
-  upload.single("img"),
-  async (req, res, next) => {
-    console.log("modify 진입");
-
-    const { userNameId } = res.locals.userId; //로그인 정보에서 가져온다.
-    //const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
-    const postId = req.params.postId;
-    const { postContents } = req.body;
-    let image = "";
-    const date = new Date();
-
-    if (req.file == undefined) {
-      image = ""; //없는 경우 현재는 공란. 필요 시 기본이미지 넣어주자
-    } else {
-      image = req.file.path;
-=======
 router.put("/posts/:postId/modify", authMiddlewares, upload.single('img'), async (req, res, next) => {
   console.log('modify 진입')
 
-  const { userNameId } = res.locals.userId; //로그인 정보에서 가져온다.
+  const { userId } = res.locals.userId; //로그인 정보에서 가져온다.
   //const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
   const postId = req.params.postId;
   const { postContents } = req.body;
@@ -219,7 +159,6 @@ router.put("/posts/:postId/modify", authMiddlewares, upload.single('img'), async
   try {
     if (image) {
       resizeImg(req.file.path);
->>>>>>> 7a6baa9a433d1ea9c888eaec708c9117258c9296
     }
 
     try {
@@ -227,16 +166,10 @@ router.put("/posts/:postId/modify", authMiddlewares, upload.single('img'), async
         resizeImg(req.file.path);
       }
 
-<<<<<<< HEAD
       //postsId가 존재하는지 null 체크
       if (postId == null) {
         return res.send({ result: "해당 포스팅이 존재하지 않습니다." });
       }
-=======
-    //postsId가 존재하는지 db 체크
-    isExist = await Posts.findOne({where: {postId}});
-    if (isExist.length !== 0 && userNameId == isExist.userId) {
->>>>>>> e037766078923d2815cb644f4a958a94f1d2ba59
 
       //postsId가 존재하는지 db 체크
       isExist = await Posts.findOne({ where: { postId } });
