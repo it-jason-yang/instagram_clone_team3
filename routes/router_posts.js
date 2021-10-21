@@ -7,6 +7,7 @@ const path = require("path"); //경로지정
 const randomstring = require("randomstring");
 const sharp = require("sharp");
 const authMiddlewares = require("../middlewares/auth-middlewares");
+const likeCheck = require("../middlewares/likeCheck");
 const likeCtrl = require("../controllers/likes/like-ctrl");
 
 OutputLike = likeCtrl.likeOutPut.getLike;
@@ -100,7 +101,7 @@ router.post(
 //         ORDER BY p.postId DESC`;
 
 //게시글 받아와서 뿌리기
-router.get("/posts", async (req, res) => {
+router.get("/posts", authMiddlewares, likeCheck, async (req, res) => {
   try {
     //const posts = await Posts.find({}).sort({ postId: -1 });
     const postQuery = `
@@ -114,8 +115,8 @@ router.get("/posts", async (req, res) => {
     const posts = await sequelize.query(postQuery, {
       type: Sequelize.QueryTypes.SELECT,
     });
-
-    res.send({ result: posts });
+    const likes = res.likesList;
+    res.send({ result: posts, likes: likes });
   } catch (error) {
     console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
     res.status(400).send({
