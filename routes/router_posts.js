@@ -138,6 +138,7 @@ router.delete("/posts/:postId/delete", authMiddlewares, async (req, res) => {
   console.log("delete 진입");
   const postId = req.params.postId;
 <<<<<<< HEAD
+<<<<<<< HEAD
   const { userNameId } = res.locals.userId; //로그인 정보에서 가져온다.
   //const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
   try {
@@ -151,10 +152,13 @@ router.delete("/posts/:postId/delete", authMiddlewares, async (req, res) => {
         .send({ msg: "해당 포스팅이 존재하지 않거나 삭제할 수 없습니다." });
 =======
   const {userId} = res.locals.userId; //로그인 정보에서 가져온다.
+=======
+  const {userNameId} = res.locals.userId; //로그인 정보에서 가져온다.
+>>>>>>> e037766078923d2815cb644f4a958a94f1d2ba59
   //const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
   try {
     isExist = await Posts.findOne({ where: {postId} });
-      if (isExist.length !== 0 && userId == isExist.userId) {
+      if (isExist.length !== 0 && userNameId == isExist.userId) {
         await Posts.destroy({ where: {postId} });
         return res.status(200).send({ msg: "포스팅 삭제 완료!" });
       } else {
@@ -199,7 +203,7 @@ router.put(
 router.put("/posts/:postId/modify", authMiddlewares, upload.single('img'), async (req, res, next) => {
   console.log('modify 진입')
 
-  const { userId } = res.locals.userId; //로그인 정보에서 가져온다.
+  const { userNameId } = res.locals.userId; //로그인 정보에서 가져온다.
   //const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
   const postId = req.params.postId;
   const { postContents } = req.body;
@@ -223,10 +227,16 @@ router.put("/posts/:postId/modify", authMiddlewares, upload.single('img'), async
         resizeImg(req.file.path);
       }
 
+<<<<<<< HEAD
       //postsId가 존재하는지 null 체크
       if (postId == null) {
         return res.send({ result: "해당 포스팅이 존재하지 않습니다." });
       }
+=======
+    //postsId가 존재하는지 db 체크
+    isExist = await Posts.findOne({where: {postId}});
+    if (isExist.length !== 0 && userNameId == isExist.userId) {
+>>>>>>> e037766078923d2815cb644f4a958a94f1d2ba59
 
       //postsId가 존재하는지 db 체크
       isExist = await Posts.findOne({ where: { postId } });
