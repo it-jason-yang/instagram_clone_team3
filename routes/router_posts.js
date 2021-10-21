@@ -2,92 +2,35 @@ const express = require('express');
 const router = express.Router();
 const { Posts, sequelize, Sequelize } = require('../models');
 const fs = require('fs');
-const multer = require('multer'); //form data 처리를 할수 있는 라이브러리 multer
-const path = require('path'); //경로지정
-const randomstring = require("randomstring");
-const sharp = require("sharp");
 const authMiddlewares = require("../middlewares/auth-middlewares");
+const {addPosting, upload,resizeImg} = require('../controllers/router_posts');
 
+exports.testfn = (param) => {
+  if (param == 1) {
+    return true;
+  }else{
+    return false;
+  }
+}
 
 //스테틱 디렉토리 생성
 try{
-  fs.readdirSync('uploads'); //readdir 첫번째 인자로 폴더를 가져온다
+  fs.readdirSync('public/uploads'); //readdir 첫번째 인자로 폴더를 가져온다
 }catch(error) {
   console.log('uploads 폴더가 없으면 생성');
-  fs.mkdirSync('uploads');
-}
-
-//파일 생성규칙 
-const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, file, cb) {
-      cb(null, '${__dirname}/../public/uploads');
-    },
-    filename(req, file, cb) {
-      const fileName = randomstring.generate(20);
-      const ext = path.extname(file.originalname);
-      cb(null, fileName + Date.now() + ext);
-    },
-  }),
-  limits: { fileSize: 5 * 1024 * 1024},
-});
-
-//리사이징 즉시실행함수
-//게시글 등록 뿐아니라 수정 시에도 활용하기 위해 분리
-const resizeImg = (path) => {
-    sharp(path)
-      .resize({ width: 100 }) //width 설정하면 height는 자동으로 맞춤
-      .withMetadata()
-      .toBuffer((err, buffer) => {
-        if (err) throw err;
-        fs.writeFile(path, buffer, (err) => {
-          if (err) throw err;
-        });
-      });
+  fs.mkdirSync('public/uploads');
 }
 
 //파일 업로드
 //upload.array('img',3) 여러개 업로드 시
-router.post('/posts/create', authMiddlewares, upload.single('img'), async(req,res) => {
-  // const { userId } = res.locals.user; //로그인 정보에서 가져온다.
-  const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
-  const { postContents } = req.body;
-  let image = '';
-  const date = new Date();
-
-  if(req.file == undefined){
-    image = ''; //없는 경우 현재는 공란. 필요 시 기본이미지 넣어주자
-  }else{
-    image = req.file.path;
-  }
-
-//게시글 생성 및 파일 크기조정
-  try{
-    //이미지 가로크기 조정하여 덮어씌우기 (이미지 있는 경우만)
-    if (image) {
-      resizeImg(req.file.path);
-    }
-
-    const posts = await Posts.create({
-      userId,
-      postContents,
-      postImg:image,
-      date,
-    });
-
-    res.status(200).send({ msg: '게시글 작성에 성공하였습니다.' });
-  }catch(error){
-    console.log(error);
-    res.status(400).send({ msg: '게시글 작성에 실패하였습니다.' });
-  }
-})
+router.post('/posts/create', authMiddlewares, upload.single('img'), addPosting);
 
 //팔로우 컬럼 별도로 파서 팔로우하는 계정 글만 보여주는 경우 활용
 const img_join = `
         SELECT p.postId, p.userId, p.postContents, p.image, p.date p.createdAt, p.updatedAt
         FROM Posts AS p
         JOIN Images AS I
-        ON p.userId = u.userId
+        ON p.userId = u.userId 
         ORDER BY p.postId DESC`;
         
 //게시글 받아와서 뿌리기
@@ -125,13 +68,10 @@ router.delete('/posts/:postId/delete', authMiddlewares, async (req, res) => {
       } else {
         return res.status(400).send({ msg: "해당 포스팅이 존재하지 않거나 삭제할 수 없습니다." });
       }
-      res.status(200).send({
-        msg: '게시글을 삭제했습니다.',
-      });
 
   }catch (error) {
       console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
-      res.status(400).send({msg: '알 수 없는  문제가 발생했습니다.'});
+      res.status(400).send({msg: '알 수 없는 문제가 발생했습니다.'});
     }
 });
 
@@ -187,7 +127,7 @@ router.put("/posts/:postId/modify", authMiddlewares, upload.single('img'), async
     }
   } catch (error) {
     console.log(error);
-    return res.status(400).send({ msg: "해당 포스팅이 존재하지 않습니다.2" });
+    return res.status(400).send({ msg: "해당 포스팅이 존재하지 않습니다." });
   }
 });
 
