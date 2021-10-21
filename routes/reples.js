@@ -8,6 +8,8 @@ const authMiddlewares = require("../middlewares/auth-middlewares");
 router.post("/replyPost/:postId", authMiddlewares, async (req, res) => {
   try {
     const { userId } = res.locals.userId;
+    const { userNameId } = res.locals.userId;
+    console.log(userNameId);
     const { postId } = req.params;
     const { comment } = req.body;
     const date = new Date();

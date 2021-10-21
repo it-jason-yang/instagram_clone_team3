@@ -56,7 +56,7 @@ const likeProcess = {
         logger.info(
           `POST /likes/:postId 200 "postId가 ${postId}의 글에 ${userId}님은 이미 좋아요를 했습니다. 한번만 가능합니다." `
         );
-        res.status(200).send({ msg: "좋아요는 한번만 할 수 있습니다." });
+        res.status(200).send({ msg: "좋아요는 한번만 할 수 있습니다" });
       }
     } catch (err) {
       logger.info(`POST /likes/:postId 400 "msg:${err}"`);

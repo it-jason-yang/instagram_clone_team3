@@ -18,12 +18,14 @@ module.exports = async (req, res, next) => {
 
     User.findByPk(userId).then((user) => {
       res.locals.userId = user;
+
+      console.log(user.userNameId);
       next();
     });
   } catch (error) {
     console.log(error);
-    res.status(401).send({
-      message: "로그인 후 이용 가능한 기능입니다",
-    });
+    // res.status(401).send({
+    //   message: "로그인 후 이용 가능한 기능입니다",
+    // });
   }
 };
