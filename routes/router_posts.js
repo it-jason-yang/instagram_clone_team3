@@ -155,46 +155,41 @@ router.put("/posts/:postId/modify", authMiddlewares, upload.single('img'), async
   }else{
     image = req.file.path;
   }
-  
+
   try {
     if (image) {
       resizeImg(req.file.path);
     }
 
-    try {
-      if (image) {
-        resizeImg(req.file.path);
-      }
+    //postsId가 존재하는지 null 체크
+    if (postId == null) {
+      return res.send({ result: "해당 포스팅이 존재하지 않습니다." });
+    }
 
-      //postsId가 존재하는지 null 체크
-      if (postId == null) {
-        return res.send({ result: "해당 포스팅이 존재하지 않습니다." });
-      }
-
-      //postsId가 존재하는지 db 체크
-      isExist = await Posts.findOne({ where: { postId } });
-      if (isExist.length !== 0 && userId == isExist.userId) {
-        (function (beforeImg) {
-          fs.unlink(beforeImg, (err) =>
-            err ? console.log(err) : console.log("이미지 정상 삭제")
-          );
-        })(isExist.dataValues.postImg);
-
-        await Posts.update(
-          {
-            postContents,
-            postImg: image,
-            date,
-          },
-          {
-            where: {
-              postId: postId,
-            },
-          }
+    //postsId가 존재하는지 db 체크
+    isExist = await Posts.findOne({ where: { postId } });
+    if (isExist.length !== 0 && userId == isExist.userId) {
+      (function (beforeImg) {
+        fs.unlink(beforeImg, (err) =>
+          err ? console.log(err) : console.log("이미지 정상 삭제")
         );
+      })(isExist.dataValues.postImg);
 
-        return res.status(200).send({ msg: "포스팅 수정 완료!" });
-      }
+      await Posts.update(
+        {
+          postContents,
+          postImg: image,
+          date,
+        },
+        {
+          where: {
+            postId: postId,
+          },
+        }
+      );
+
+      return res.status(200).send({ msg: "포스팅 수정 완료!" });
+    }
     } catch (error) {
       console.log(error);
       return res.status(400).send({ msg: "해당 포스팅이 존재하지 않습니다.2" });
