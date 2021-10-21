@@ -71,10 +71,12 @@ router.post(
         resizeImg(req.file.path);
       }
 
+      const pathCutImg = image.substr(6);
+
       const posts = await Posts.create({
         userId: userNameId,
         postContents,
-        postImg: image,
+        postImg: pathCutImg,
         date,
       });
 
