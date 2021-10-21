@@ -115,11 +115,11 @@ router.get('/posts', async (req, res) => {
 router.delete('/posts/:postId/delete', authMiddlewares, async (req, res) => {
   console.log('delete 진입')
   const postId = req.params.postId;
-  const {userId} = res.locals.userId; //로그인 정보에서 가져온다.
+  const {userNameId} = res.locals.userId; //로그인 정보에서 가져온다.
   //const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
   try {
     isExist = await Posts.findOne({ where: {postId} });
-      if (isExist.length !== 0 && userId == isExist.userId) {
+      if (isExist.length !== 0 && userNameId == isExist.userId) {
         await Posts.destroy({ where: {postId} });
         return res.status(200).send({ msg: "포스팅 삭제 완료!" });
       } else {
@@ -136,7 +136,7 @@ router.delete('/posts/:postId/delete', authMiddlewares, async (req, res) => {
 router.put("/posts/:postId/modify", authMiddlewares, upload.single('img'), async (req, res, next) => {
   console.log('modify 진입')
 
-  const { userId } = res.locals.userId; //로그인 정보에서 가져온다.
+  const { userNameId } = res.locals.userId; //로그인 정보에서 가져온다.
   //const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
   const postId = req.params.postId;
   const { postContents } = req.body;
@@ -161,7 +161,7 @@ router.put("/posts/:postId/modify", authMiddlewares, upload.single('img'), async
 
     //postsId가 존재하는지 db 체크
     isExist = await Posts.findOne({where: {postId}});
-    if (isExist.length !== 0 && userId == isExist.userId) {
+    if (isExist.length !== 0 && userNameId == isExist.userId) {
 
       (function (beforeImg) {
         fs.unlink(beforeImg, (err) => err ? console.log(err) : console.log('이미지 정상 삭제'))
