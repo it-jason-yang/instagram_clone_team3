@@ -67,9 +67,9 @@ router.post(
     //게시글 생성 및 파일 크기조정
     try {
       //이미지 가로크기 조정하여 덮어씌우기 (이미지 있는 경우만)
-      if (image) {
-        resizeImg(req.file.path);
-      }
+      // if (image) {
+      //   resizeImg(req.file.path);
+      // }
 
       const pathCutImg = image.substr(6);
 
