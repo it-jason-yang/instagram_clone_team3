@@ -38,9 +38,12 @@ router.get('/posts', async (req, res) => {
   try {
     //const posts = await Posts.find({}).sort({ postId: -1 });
     const postQuery = `
-            SELECT p.postId, p.userId, p.postContents, p.postImg
-            FROM Posts AS p
-            ORDER BY p.postId DESC`;
+      SELECT p.postId, p.userId, p.postContents, p.postImg, count(l.postId) as likeCnt
+      FROM database_development.posts AS p
+      LEFT OUTER JOIN database_development.likes AS L
+      ON p.postId = l.postId
+      GROUP BY p.postId
+      ORDER BY p.postId DESC`;
 
     const posts = await sequelize.query(postQuery, {
       type: Sequelize.QueryTypes.SELECT,
