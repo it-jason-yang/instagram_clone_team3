@@ -40,7 +40,7 @@ const logger = createLogger({
 });
 
 //개발할 때만 console로 보면 되니 완성되면 파일로만 저장 후 관리 하자
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== "dev") {
   logger.add(opts.console);
 }
 
