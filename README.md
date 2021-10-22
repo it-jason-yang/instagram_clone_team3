@@ -8,9 +8,9 @@ http://happyarong.shop.s3-website.ap-northeast-2.amazonaws.com/
 
 ![image](public/hi.png)
 
-https://추후 링크
+### 🎧 영상 링크
 
-https://추후 영상링크
+구현 영상 : https://www.youtube.com/watch?v=cfT0ilynghU
 
 ## 프로젝트 소개
 
