@@ -8,6 +8,7 @@ const randomstring = require("randomstring");
 const sharp = require("sharp");
 const authMiddlewares = require("../middlewares/auth-middlewares");
 const likeCheck = require("../middlewares/likeCheck");
+const replyCheck = require("../middlewares/replyCheck");
 
 //스테틱 디렉토리 생성
 try {
@@ -98,10 +99,15 @@ router.post(
 //         ORDER BY p.postId DESC`;
 
 //게시글 받아와서 뿌리기
-router.get("/posts", authMiddlewares, likeCheck, async (req, res) => {
-  try {
-    //const posts = await Posts.find({}).sort({ postId: -1 });
-    const postQuery = `
+router.get(
+  "/posts",
+  authMiddlewares,
+  likeCheck,
+  replyCheck,
+  async (req, res) => {
+    try {
+      //const posts = await Posts.find({}).sort({ postId: -1 });
+      const postQuery = `
     SELECT p.postId, p.userId, p.postContents, p.postImg, count(l.postId) as likeCnt
     FROM database_development.posts AS p
     LEFT OUTER JOIN database_development.likes AS L
@@ -109,18 +115,21 @@ router.get("/posts", authMiddlewares, likeCheck, async (req, res) => {
     GROUP BY p.postId
     ORDER BY p.postId DESC`;
 
-    const posts = await sequelize.query(postQuery, {
-      type: Sequelize.QueryTypes.SELECT,
-    });
-    const likes = res.likesList;
-    res.send({ result: posts, likes: likes });
-  } catch (error) {
-    console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
-    res.status(400).send({
-      msg: "전체 게시글 조회에 실패했습니다.",
-    });
+      const posts = await sequelize.query(postQuery, {
+        type: Sequelize.QueryTypes.SELECT,
+      });
+      const likes = res.likesList;
+      const reples = res.replesList;
+      res.send({ result: posts, likes: likes, reples: reples });
+    } catch (error) {
+      console.log(error);
+      console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
+      res.status(400).send({
+        msg: "전체 게시글 조회에 실패했습니다.",
+      });
+    }
   }
-});
+);
 
 //게시글 삭제
 router.delete("/posts/:postId/delete", authMiddlewares, async (req, res) => {
@@ -128,12 +137,10 @@ router.delete("/posts/:postId/delete", authMiddlewares, async (req, res) => {
   const postId = req.params.postId;
   const { userNameId } = res.locals.userId; //로그인 정보에서 가져온다.
   //const userId = 'jason@naver.com'; //테스트위해 하드코딩으로 아이디 지정
-
   console.log("locals아이디 : " + userNameId);
   try {
     isExist = await Posts.findOne({ where: { postId } });
     console.log("exist아이디 : " + isExist.userId);
-
     if (isExist.length !== 0 && userNameId == isExist.userId) {
       await Posts.destroy({ where: { postId } });
       return res.status(200).send({ msg: "포스팅 삭제 완료!" });
