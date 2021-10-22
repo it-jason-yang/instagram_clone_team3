@@ -4,13 +4,13 @@
 
 http://happyarong.shop.s3-website.ap-northeast-2.amazonaws.com/
 
-### 🌼 구현 메인페이지
-
-![image](public/hi.png)
-
 ### 🎧 영상 링크
 
 구현 영상 : https://www.youtube.com/watch?v=cfT0ilynghU
+
+### 🌼 구현 메인페이지
+
+![image](public/hi.png)
 
 ## 프로젝트 소개
 
