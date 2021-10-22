@@ -22,6 +22,7 @@ router.post("/replyPost/:postId", authMiddlewares, async (req, res) => {
     );
     res.status(200).send({ result: reply, msg: "댓글을 등록했습니다." });
   } catch (err) {
+    console.log(err);
     logger.error(`POST /replyPost/:postId 400 "msg: ${err}"`);
     res.status(400).send({ msg: "댓글 작성에 실패했습니다." });
   }

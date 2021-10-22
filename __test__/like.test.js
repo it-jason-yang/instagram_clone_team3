@@ -16,7 +16,7 @@ describe("createLikeOne", () => {
     status: jest.fn(() => res),
     send: jest.fn(),
   };
-  test("좋아요를 누르면 좋아요되었습니다 라고 해야됨", async () => {
+  test("좋아요를 누르면 좋아요 완료 라고 해야됨", async () => {
     Like.findOne.mockReturnValue(null);
     await createLikeOne(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
@@ -25,7 +25,7 @@ describe("createLikeOne", () => {
     });
   });
 
-  test("좋아요를 누른 사람이 또 누르면 좋아요는 한번만 할 수 있습니다라고 알려줘야됨", async () => {
+  test("좋아요를 누른 사람이 또 누르면 좋아요는 한번만 할 수 있습니다 라고 알려줘야됨", async () => {
     Like.findOne.mockReturnValue(true);
     await createLikeOne(req, res);
     expect(res.status).toHaveBeenCalledWith(404);
@@ -33,7 +33,7 @@ describe("createLikeOne", () => {
       msg: "좋아요는 한번만 할 수 있습니다",
     });
   });
-  test("좋아요 추가 기능 중 DB에서 에러발생 시 catch 부분 error 호출", async () => {
+  test("좋아요 추가 기능 중 DB에서 에러발생 시(catch로 이동 후 error 호출) 알 수 없는 문제가 발생 했습니다. 관리자에 문의 해주세요 라고 해야됨", async () => {
     const error = "에러에러";
     Like.findOne.mockReturnValue(Promise.reject(error));
     await createLikeOne(req, res);
@@ -44,7 +44,7 @@ describe("createLikeOne", () => {
   });
 });
 
-//removeLikeOne testcode
+// removeLikeOne testcode
 describe("removeLikeOne", () => {
   const req = {
     params: { postId: 1 },
@@ -85,7 +85,7 @@ describe("removeLikeOne", () => {
   });
 });
 
-//likeOutPut testcode
+// likeOutPut testcode
 describe("likeOutPut", () => {
   const req = {
     params: { postId: 1 },
