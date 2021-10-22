@@ -4,11 +4,11 @@ const likeCtrl = require("../controllers/likes/like-ctrl");
 const authMiddlewares = require("../middlewares/auth-middlewares");
 
 postLike = likeCtrl.likeProcess;
-OutputLike = likeCtrl.likeOutPut;
+outputLike = likeCtrl.likeOutPut;
 //좋아요 추가
 router.post("/likes/:postId", authMiddlewares, postLike.createLike);
 //좋아요 조회
-router.get("/likes/:postId", OutputLike.getLike);
+router.get("/likes/:postId", outputLike.getLike);
 //좋아요 삭제
 router.delete("/likes/:postId", authMiddlewares, postLike.removeLike);
 
