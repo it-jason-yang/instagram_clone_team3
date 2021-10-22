@@ -131,7 +131,7 @@ router.delete("/posts/:postId/delete", authMiddlewares, async (req, res) => {
   try {
     isExist = await Posts.findOne({ where: { postId } });
     if (isExist.length !== 0 && userId == isExist.userId) {
-      await Posts.destroy({ where: { postId } });
+      await Posts.detroy({ where: { postId } });
       return res.status(200).send({ msg: "포스팅 삭제 완료!" });
     } else {
       return res
