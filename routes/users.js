@@ -12,8 +12,8 @@ dotenv.config();
 //user(register) router api create
 router.route("/users/register").post(async (req, res) => {
   try {
+    console.log("123123123u120ihoigvfhboisdbgojadsbgo");
     const { userId, userName, userNameId, userPw } = req.body;
-    console.log("hi!!!");
     const users = await User.findAll({
       where: {
         [Op.or]: [{ userId }, { userNameId }],
